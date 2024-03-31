@@ -13,23 +13,7 @@ services:
       - 5432:5432
     networks:
       - timescale_network
-
-  # PGAdmin for administering the TimescaleDB/PostgreSQL database with SQL
-  pgadmin:
-    image: "dpage/pgadmin4:latest"
-    restart: unless-stopped
-    environment:
-      PGADMIN_LISTEN_PORT: 9000
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_EMAIL}
-    ports:
-      - 9000:9000
-    volumes:
-      # So the database server settings get saved and stored even if the container is replaced or deleted
-      - ./db/pgadmin:/var/lib/pgadmin
-    networks:
-      - timescale_network
-
+      
 networks:
   # The network the above containers share, for accessing the database
   timescale_network:
