@@ -117,7 +117,7 @@ class IndexIDH:
         merge_df = merge_df.with_columns(
             (pl.col("index") * pl.col("coef")).alias("income_index_ajusted"))
         merge_df = merge_df.select(pl.col("Year", "index", "income_index_ajusted")).drop_nulls()
-
+        
         if debug:
             return merge_df
         else:
@@ -262,9 +262,9 @@ class IndexIDH:
 
     def to_category(self, x):
         mapping = {4:1, 5:2, 6:3, 7:4, 8:5, 
-                   9:6, 10:7, 11:8, 2:9, 13:10,
-                   14: 11,15: 11, 16:12, 17:12, 
-                   18:12.5, 19:13, 20:24, 21:16,
+                   9:6, 10:7, 11:8, 12:9, 13:10,
+                   14:11 ,15:11, 16:12, 17:12, 
+                   18:12.5, 19:13, 20:14, 21:16,
         }
         return mapping.get(x, 0) if x <= 21 else 18
     
