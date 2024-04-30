@@ -118,6 +118,11 @@ class IndexIDH:
             (pl.col("index") * pl.col("coef")).alias("income_index_ajusted"))
         merge_df = merge_df.select(pl.col("Year", "index", "income_index_ajusted")).drop_nulls()
         
+        # calculate the growth rate
+        merge_df = merge_df.with_columns(
+            (pl.col("index").pct_change()).alias("growth_rate_income_index"),
+            (pl.col("income_index_ajusted").pct_change()).alias("growth_rate_income_index_ajusted"))
+        
         if debug:
             return merge_df
         else:
