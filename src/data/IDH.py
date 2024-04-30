@@ -72,11 +72,16 @@ class IndexIDH:
         gni_df = gni_df.with_columns(pl.col("Year").cast(pl.Int64))
 
         # adjust the income index
-        adjusted_df = pl.DataFrame({"Year": [1],"coef": [1.1],"atkinson": [1.1],}).clear()
+        empty_df = [
+            pl.Series("Year", [], dtype=pl.Int64),
+            pl.Series("coef", [], dtype=pl.Float64),
+            pl.Series("atkinson", [], dtype=pl.Float64),
+        ]
+        adjusted_df = pl.DataFrame(empty_df).clear()
 
         for file in os.listdir('data/raw/'):
             if file.startswith('data_hpr'):
-                adjust_df = pl.read_csv("data/raw/data_hpr_2012_raw.csv")
+                adjust_df = pl.read_csv(f"data/raw/{file}", ignore_errors=True)
                 adjust_df = adjust_df.select(pl.col("HINCP").drop_nulls())
                 adjust_df = adjust_df.sort("HINCP")
                 adjust_df = adjust_df.filter(pl.col("HINCP") > 0)
@@ -265,13 +270,13 @@ class IndexIDH:
         coef = 1 - atkinson
         return coef, amean, gemetric, atkinson
 
-    def to_category(self, x):
+    def to_category(self, value):
         mapping = {4:1, 5:2, 6:3, 7:4, 8:5, 
                    9:6, 10:7, 11:8, 12:9, 13:10,
                    14:11 ,15:11, 16:12, 17:12, 
                    18:12.5, 19:13, 20:14, 21:16,
         }
-        return mapping.get(x, 0) if x <= 21 else 18
+        return mapping.get(value, 0) if value <= 21 else 18
     
 if __name__ == "__main__":
     # # generate csv file for 2009-2020 for the education index
